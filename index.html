@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mohammad Rifatul Islam Marof — ICT Portfolio</title>
+<meta name="description" content="ICT Graduate · Android Developer · AI/ML Researcher · Embedded Systems · Comilla University 2026"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ══ TOKENS ══════════════════════════════════════════════════════ */
+:root{
+  --bg:#F7F8FC; --bg2:#FFF; --bg3:#EEF1F8;
+  --surface:#FFF; --surface2:#F0F3FB;
+  --border:#DDE3F0; --border2:#B8C4DF;
+  --ink:#0F1C2E; --ink2:#3D4F6E; --ink3:#6B7FA0;
+  --accent:#2563EB; --accent-lt:#EBF1FF; --accent2:#7C3AED;
+  --teal:#0891B2; --teal-lt:#E0F5FA;
+  --gold:#B45309; --gold-lt:#FEF3C7;
+  --green:#059669; --green-lt:#D1FAE5;
+  --tag-bg:#EEF1F8; --tag-ink:#3D4F6E;
+  --nav-bg:rgba(247,248,252,0.93);
+  --shadow:0 1px 3px rgba(15,28,46,.08),0 4px 16px rgba(15,28,46,.06);
+  --shadow-lg:0 8px 40px rgba(15,28,46,.12);
+  --r:14px;
+  --serif:'DM Serif Display',Georgia,serif;
+  --ui:'Outfit',sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#080C14; --bg2:#0D1120; --bg3:#111827;
+  --surface:#111827; --surface2:#1A2340;
+  --border:rgba(99,120,180,.18); --border2:rgba(99,120,180,.35);
+  --ink:#E8EDF8; --ink2:#9AABCC; --ink3:#5A7099;
+  --accent:#4F8EFF; --accent-lt:rgba(79,142,255,.12); --accent2:#9B7AFD;
+  --teal:#22D3EE; --teal-lt:rgba(34,211,238,.1);
+  --gold:#F59E0B; --gold-lt:rgba(245,158,11,.1);
+  --green:#34D399; --green-lt:rgba(52,211,153,.1);
+  --tag-bg:rgba(255,255,255,.06); --tag-ink:#9AABCC;
+  --nav-bg:rgba(8,12,20,.93);
+  --shadow:0 1px 3px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.2);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.4);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:var(--bg);color:var(--ink);font-family:var(--ui);line-height:1.6;transition:background .3s,color .3s;overflow-x:hidden}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══ NAV ════════════════════════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--nav-bg);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(16px,4vw,48px);transition:background .3s,border-color .3s
+}
+.nav-brand{font-family:var(--serif);font-size:1.3rem;color:var(--ink);font-style:italic;text-decoration:none}
+.nav-brand span{color:var(--accent);font-style:normal}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-links a{font-size:.78rem;font-weight:600;color:var(--ink3);padding:5px 11px;border-radius:8px;text-decoration:none;transition:color .18s,background .18s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:var(--accent);background:var(--accent-lt)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.theme-btn{background:var(--surface2);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:background .2s}
+.theme-btn:hover{background:var(--border)}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;background:none;border:none}
+.hamburger span{display:block;width:20px;height:2px;background:var(--ink2);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mobile-nav{display:none;position:fixed;top:60px;left:0;right:0;z-index:199;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 20px 20px;flex-direction:column;gap:3px}
+.mobile-nav.open{display:flex}
+.mobile-nav a{font-size:.88rem;font-weight:600;color:var(--ink2);padding:9px 12px;border-radius:8px;text-decoration:none}
+.mobile-nav a:hover{color:var(--accent);background:var(--accent-lt)}
+
+/* ══ LAYOUT ══════════════════════════════════════════════════════ */
+.wrapper{max-width:900px;margin:0 auto;padding:0 clamp(16px,4vw,40px)}
+section{padding:96px 0 72px;border-bottom:1px solid var(--border)}
+section:last-of-type{border-bottom:none}
+.eyebrow{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.sec-title{font-family:var(--serif);font-size:clamp(1.8rem,3.5vw,2.6rem);color:var(--ink);line-height:1.1;margin-bottom:10px}
+.sec-sub{font-size:.95rem;color:var(--ink3);max-width:560px;line-height:1.75;margin-bottom:44px}
+
+/* ══ HERO ════════════════════════════════════════════════════════ */
+#hero{min-height:100vh;display:flex;align-items:center;padding:80px 0 60px;border-bottom:1px solid var(--border)}
+.hero-inner{display:flex;align-items:center;justify-content:space-between;gap:48px;width:100%}
+.hero-text{flex:1}
+.hero-label{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);background:var(--accent-lt);border:1px solid rgba(37,99,235,.2);padding:4px 12px;border-radius:20px;margin-bottom:20px}
+[data-theme=dark] .hero-label{border-color:rgba(79,142,255,.25)}
+.hero-name{font-family:var(--serif);font-size:clamp(2.6rem,6vw,4.4rem);color:var(--ink);line-height:1.04;margin-bottom:6px;letter-spacing:-.02em}
+.hero-name em{font-style:italic;color:var(--accent);display:block}
+.hero-tagline{font-size:.85rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:22px}
+.hero-tagline span{color:var(--teal)}
+.hero-bio{font-size:1rem;color:var(--ink2);line-height:1.8;max-width:520px;margin-bottom:32px}
+.hero-bio strong{color:var(--ink);font-weight:600}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:36px}
+.btn{font-family:var(--ui);font-size:.83rem;font-weight:700;padding:11px 26px;border-radius:10px;cursor:pointer;border:none;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-fill{background:var(--accent);color:#fff}
+.btn-fill:hover{opacity:.88;transform:translateY(-1px);text-decoration:none;color:#fff}
+.btn-outline{background:transparent;color:var(--ink2);border:1.5px solid var(--border2)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);text-decoration:none}
+.hero-socials{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sico{display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);color:var(--ink2);font-size:1.05rem;text-decoration:none;transition:all .2s}
+.sico:hover{background:var(--accent-lt);border-color:var(--accent);color:var(--accent);transform:translateY(-2px);text-decoration:none}
+.sico-label{font-size:.72rem;color:var(--ink3);font-weight:600;margin-left:2px}
+
+<div class="hero-photo-wrap">
+    <div class="hero-photo">
+        <img src="/home/rifat-cou/Downloads/Marof.jpg" alt="Mohammad Rifatul Islam Marof — ICT Graduate, Comilla University"/>
+    </div>
+    <div class="avail-badge"><div class="avail-dot"></div>Available · July 2026</div>
+</div>
+
+/* ══ ABOUT ═══════════════════════════════════════════════════════ */
+.about-body{font-size:.97rem;color:var(--ink2);line-height:1.85;margin-bottom:32px}
+.about-body strong{color:var(--ink);font-weight:600}
+.about-body p+p{margin-top:14px}
+.about-pillars{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.pillar{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px;box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
+.pillar:hover{border-color:var(--border2);transform:translateY(-2px)}
+.pillar-ico{font-size:1.5rem;margin-bottom:10px}
+.pillar-title{font-size:.9rem;font-weight:700;color:var(--ink);margin-bottom:6px}
+.pillar-text{font-size:.82rem;color:var(--ink3);line-height:1.65}
+
+/* ══ SKILLS ══════════════════════════════════════════════════════ */
+.skill-cats{display:flex;flex-direction:column;gap:24px}
+.skill-cat-label{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.skill-pills{display:flex;flex-wrap:wrap;gap:8px}
+.sp{font-size:.8rem;font-weight:500;padding:5px 13px;border-radius:8px;background:var(--tag-bg);color:var(--tag-ink);border:1px solid var(--border);transition:all .15s;cursor:default}
+.sp:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt)}
+.sp.hi{background:var(--accent-lt);color:var(--accent);border-color:rgba(37,99,235,.25);font-weight:600}
+[data-theme=dark] .sp.hi{border-color:rgba(79,142,255,.3)}
+.sp.tl{background:var(--teal-lt);color:var(--teal);border-color:rgba(8,145,178,.25)}
+[data-theme=dark] .sp.tl{border-color:rgba(34,211,238,.25)}
+.marquee-wrap{overflow:hidden;margin-top:36px;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2}
+.marquee-wrap::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
+.marquee-track{display:flex;gap:36px;animation:marquee 28s linear infinite;width:max-content}
+.marquee-wrap:hover .marquee-track{animation-play-state:paused}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.marquee-item{font-size:.75rem;font-weight:600;color:var(--ink3);white-space:nowrap;letter-spacing:.04em}
+
+/* ══ TIMELINE (edu + exp) ════════════════════════════════════════ */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,var(--accent),var(--teal));border-radius:2px}
+.tl-entry{position:relative;margin-bottom:20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
+.tl-entry:hover{border-color:var(--border2);transform:translateX(4px)}
+.tl-entry::before{content:'';position:absolute;left:-24px;top:24px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg);box-shadow:0 0 0 2px var(--accent)}
+.timeline.teal .tl-entry::before{background:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.tl-date{font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.timeline.teal .tl-date{color:var(--teal)}
+.tl-title{font-size:1rem;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3}
+.tl-org{font-size:.85rem;color:var(--teal);font-weight:600;margin-bottom:8px}
+.tl-gpa{display:inline-block;font-size:.73rem;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--gold-lt);color:var(--gold);border:1px solid rgba(180,83,9,.2);margin-bottom:8px}
+[data-theme=dark] .tl-gpa{border-color:rgba(245,158,11,.2)}
+.tl-body{font-size:.85rem;color:var(--ink2);line-height:1.75;margin-top:8px}
+.tl-body strong{color:var(--ink);font-weight:600}
+.cw-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.cw-pill{font-size:.71rem;padding:3px 10px;border-radius:6px;background:var(--bg3);color:var(--ink3);border:1px solid var(--border)}
+
+/* ══ CERTS ═══════════════════════════════════════════════════════ */
+.cert-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:32px}
+.cert-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow);transition:border-color .2s,transform .2s}
+.cert-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.cert-ico{width:34px;height:34px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1rem;background:var(--accent-lt)}
+.cert-name{font-size:.78rem;font-weight:700;color:var(--ink);line-height:1.3;margin-bottom:2px}
+.cert-issuer{font-size:.68rem;color:var(--teal);font-weight:600}
+.cert-date{font-size:.65rem;color:var(--ink3);margin-top:2px}
+
+/* ══ MEMBERSHIPS ═════════════════════════════════════════════════ */
+.prog-track{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;box-shadow:var(--shadow);margin-bottom:20px}
+.prog-track-title{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.prog-steps{display:flex;flex-direction:column;gap:0}
+.ps{display:flex;align-items:center;gap:12px;padding:8px 10px;border-radius:8px;transition:background .15s}
+.ps:hover{background:var(--bg3)}
+.ps.now{background:var(--accent-lt)}
+[data-theme=dark] .ps.now{background:rgba(79,142,255,.08)}
+.ps-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;background:var(--accent);border:2px solid var(--accent)}
+.ps-info{flex:1}
+.ps-role{font-size:.83rem;font-weight:700;color:var(--ink)}
+.ps-date{font-size:.68rem;color:var(--ink3)}
+.ps-arrow{font-size:.7rem;color:var(--accent)}
+.mem-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.mem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;box-shadow:var(--shadow);transition:border-color .2s,transform .2s;position:relative}
+.mem-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.mem-card.current{border-color:rgba(37,99,235,.35);background:linear-gradient(135deg,var(--accent-lt),var(--surface))}
+[data-theme=dark] .mem-card.current{border-color:rgba(79,142,255,.3)}
+.mem-badge{position:absolute;top:14px;right:14px;font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:4px}
+.mb-current{background:var(--green-lt);color:var(--green)}
+.mb-lead{background:var(--accent-lt);color:var(--accent)}
+[data-theme=dark] .mb-current{background:rgba(52,211,153,.15);color:#34D399}
+.mem-ico{font-size:1.6rem;margin-bottom:10px}
+.mem-role{font-size:.95rem;font-weight:700;color:var(--ink);margin-bottom:3px}
+.mem-org{font-size:.82rem;color:var(--accent);font-weight:600;margin-bottom:5px}
+.mem-date{font-size:.7rem;color:var(--ink3);margin-bottom:8px}
+.mem-desc{font-size:.8rem;color:var(--ink2);line-height:1.6}
+
+/* ══ PROJECTS ════════════════════════════════════════════════════ */
+.proj-stack{display:flex;flex-direction:column;gap:20px}
+.proj-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:26px 28px;box-shadow:var(--shadow);transition:all .22s;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;position:relative;overflow:hidden}
+.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);opacity:0;transition:opacity .2s}
+.proj-card:hover{border-color:var(--border2);transform:translateX(4px);box-shadow:var(--shadow-lg)}
+.proj-card:hover::before{opacity:1}
+.proj-card.feat{border-color:rgba(37,99,235,.25)}
+[data-theme=dark] .proj-card.feat{border-color:rgba(79,142,255,.2)}
+.proj-card.feat::before{opacity:1;background:linear-gradient(to bottom,var(--accent),var(--accent2))}
+.proj-l{min-width:0}
+.proj-r{flex-shrink:0;text-align:right;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.proj-badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pb{font-size:.62rem;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:5px}
+.pb-ai{background:rgba(124,58,237,.1);color:var(--accent2);border:1px solid rgba(124,58,237,.2)}
+.pb-mob{background:var(--accent-lt);color:var(--accent);border:1px solid rgba(37,99,235,.2)}
+.pb-hw{background:var(--teal-lt);color:var(--teal);border:1px solid rgba(8,145,178,.2)}
+.pb-thesis{background:var(--gold-lt);color:var(--gold);border:1px solid rgba(180,83,9,.2)}
+[data-theme=dark] .pb-ai{border-color:rgba(155,122,253,.3)}
+[data-theme=dark] .pb-mob{border-color:rgba(79,142,255,.3)}
+[data-theme=dark] .pb-hw{border-color:rgba(34,211,238,.3)}
+[data-theme=dark] .pb-thesis{border-color:rgba(245,158,11,.3)}
+.gh-link{font-size:.73rem;font-weight:600;color:var(--ink3);text-decoration:none;padding:5px 11px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);transition:all .18s;display:inline-flex;align-items:center;gap:5px}
+.gh-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);text-decoration:none}
+.proj-title{font-size:1.05rem;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.3}
+.proj-sub{font-size:.78rem;color:var(--ink3);font-style:italic;margin-bottom:12px}
+.proj-desc{font-size:.85rem;color:var(--ink2);line-height:1.75;margin-bottom:14px}
+.proj-metrics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.metric{font-size:.71rem;font-weight:700;padding:3px 10px;border-radius:6px;background:var(--green-lt);color:var(--green);border:1px solid rgba(5,150,105,.2)}
+[data-theme=dark] .metric{background:rgba(52,211,153,.08);color:#34D399;border-color:rgba(52,211,153,.2)}
+.proj-tags{display:flex;flex-wrap:wrap;gap:5px}
+.pt{font-size:.72rem;padding:3px 9px;border-radius:6px;background:var(--tag-bg);color:var(--tag-ink);border:1px solid var(--border);font-weight:500}
+
+/* ══ CONTACT ═════════════════════════════════════════════════════ */
+#contact{border-bottom:none}
+.contact-intro{font-size:.97rem;color:var(--ink2);line-height:1.8;max-width:580px;margin-bottom:22px}
+.otw{display:flex;align-items:center;gap:12px;background:var(--green-lt);border:1px solid rgba(5,150,105,.25);border-radius:10px;padding:14px 18px;font-size:.84rem;color:var(--green);max-width:560px;margin-bottom:28px}
+[data-theme=dark] .otw{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.2);color:#34D399}
+.contact-email{font-family:var(--serif);font-size:clamp(1.3rem,3vw,2rem);color:var(--ink);margin-bottom:32px;display:block;transition:color .2s}
+.contact-email:hover{color:var(--accent);text-decoration:none}
+.contact-links{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:28px}
+.cl{display:flex;align-items:center;gap:10px;padding:12px 18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;color:var(--ink2);font-size:.83rem;font-weight:600;box-shadow:var(--shadow);transition:all .2s}
+.cl:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);transform:translateY(-2px);text-decoration:none}
+
+/* ══ FOOTER ══════════════════════════════════════════════════════ */
+footer{border-top:1px solid var(--border);padding:24px clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--ink3)}
+footer a{color:var(--ink3);transition:color .2s}
+footer a:hover{color:var(--accent);text-decoration:none}
+.footer-links{display:flex;gap:18px}
+
+/* ══ REVEAL ══════════════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal:nth-child(2){transition-delay:.07s}
+.reveal:nth-child(3){transition-delay:.14s}
+.reveal:nth-child(4){transition-delay:.21s}
+.reveal:nth-child(5){transition-delay:.28s}
+.reveal:nth-child(6){transition-delay:.35s}
+
+/* ══ RESPONSIVE ══════════════════════════════════════════════════ */
+@media(max-width:768px){
+  .hero-inner{flex-direction:column-reverse;align-items:flex-start}
+  .hero-photo{width:100%;max-width:280px;height:240px}
+  .hero-photo-wrap{align-self:center}
+  .about-pillars{grid-template-columns:1fr}
+  .proj-card{grid-template-columns:1fr}
+  .proj-r{flex-direction:row;justify-content:flex-start;align-items:center}
+  .proj-badges{justify-content:flex-start}
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .hamburger{display:flex}
+  .hero-btns{flex-direction:column}
+  .btn{width:100%;justify-content:center}
+}
+@media(max-width:480px){
+  .mem-grid{grid-template-columns:1fr}
+  .cert-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#hero" class="nav-brand">RI<span>.</span></a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#education">Education</a>
+    <a href="#experience">Experience</a>
+    <a href="#memberships">Memberships</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">&#127769;</button>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <a href="#about"       onclick="closeMenu()">About</a>
+  <a href="#skills"      onclick="closeMenu()">Skills</a>
+  <a href="#education"   onclick="closeMenu()">Education</a>
+  <a href="#experience"  onclick="closeMenu()">Experience</a>
+  <a href="#memberships" onclick="closeMenu()">Memberships</a>
+  <a href="#projects"    onclick="closeMenu()">Projects</a>
+  <a href="#contact"     onclick="closeMenu()">Contact</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+<div class="wrapper">
+<div class="hero-inner">
+  <div class="hero-text">
+    <div class="hero-label">Portfolio &amp; Research</div>
+    <h1 class="hero-name">Mohammad<br><em>Rifatul Islam</em>Marof</h1>
+    <div class="hero-tagline">ICT Graduate &nbsp;&middot;&nbsp; <span>Android Developer</span> &nbsp;&middot;&nbsp; AI/ML Researcher</div>
+    <p class="hero-bio">
+      Final-year <strong>B.Sc. ICT Engineer</strong> at Comilla University (CGPA 3.66/4.00) building
+      impactful software &mdash; from Firebase-backed Android apps with <strong>100% calculation accuracy</strong>
+      to PID-controlled autonomous robots. Currently <strong>President of CoUSC</strong> (200+ members),
+      leading digital transformation. Exploring <strong>deep learning</strong>, <strong>ensemble methods</strong>,
+      and <strong>quantum communication</strong>.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn btn-fill">Selected Works</a>
+      <a href="#contact" class="btn btn-outline">Get in Touch</a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://github.com/rifat-cou" target="_blank" class="sico" title="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+      </a>
+      <a href="https://linkedin.com/in/rifatmi71" target="_blank" class="sico" title="LinkedIn">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+      </a>
+      <a href="mailto:rifat.jm223@gmail.com" class="sico" title="Email">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </a>
+      <a href="https://sites.google.com/view/rifat-cou/home" target="_blank" class="sico" title="Portfolio">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+      </a>
+      <a href="https://linktr.ee/rifat.cou" target="_blank" class="sico" title="Linktree">&#127807;</a>
+      <span class="sico-label">&middot; rifat-cou.github.io</span>
+    </div>
+  </div>
+  <div class="hero-photo-wrap">
+    <div class="hero-photo">
+      <!-- To add your photo: replace the letter R below with:
+           <img src="photo.jpg" alt="Rifatul Islam Marof"/> -->
+      R
+    </div>
+    <div class="avail-badge"><div class="avail-dot"></div>Available &middot; July 2026</div>
+  </div>
+</div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+<div class="wrapper">
+  <div class="eyebrow">About Me</div>
+  <h2 class="sec-title">Who I Am</h2>
+  <div class="about-body reveal">
+    <p>I'm a <strong>final-year ICT Engineering student</strong> at Comilla University, Cumilla, specialising in <strong>Android development, applied AI/ML, and embedded systems</strong>. My journey started with a curiosity for how things work at the hardware level &mdash; building a PID-controlled robot from scratch &mdash; and grew into a passion for software that genuinely solves problems people face every day.</p>
+    <p>My thesis, <strong>PoxNetX</strong>, benchmarks 20 CNN transfer learning architectures across 6 ensemble strategies for medical image classification, combining deep learning research with real-world clinical decision support. Outside of labs and code, I lead <strong>Comilla University Science Club</strong> (200+ members), where I introduced workflow automation cutting administrative overhead by ~70%. I also write science journalism &mdash; 10+ peer-reviewed articles published at Science Bee.</p>
+    <p>Currently exploring <strong>Advanced DL Frameworks</strong>, <strong>LLM integration</strong>, and <strong>quantum communication in IoT</strong>. Open to full-time roles in software engineering, mobile development, or applied AI/ML.</p>
+  </div>
+  <div class="about-pillars">
+    <div class="pillar reveal">
+      <div class="pillar-ico">&#128241;</div>
+      <div class="pillar-title">Android Development</div>
+      <div class="pillar-text">Full-stack Android apps with Firebase, MVC architecture, and Material Design &mdash; from auth flows to PDF export and real-time cloud sync.</div>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-ico">&#129504;</div>
+      <div class="pillar-title">AI / ML Research</div>
+      <div class="pillar-text">Benchmarking CNN ensembles for medical imaging, integrating Grad-CAM and LIME explainability, and building LLM-powered clinical tools.</div>
+    </div>
+    <div class="pillar reveal">
+      <div class="pillar-ico">&#129302;</div>
+      <div class="pillar-title">Embedded Systems</div>
+      <div class="pillar-text">Microcontroller-based autonomous systems in C++ &mdash; evaluating PID vs ON/OFF strategies and validating across real-world navigation scenarios.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+<div class="wrapper">
+  <div class="eyebrow">Technical Arsenal</div>
+  <h2 class="sec-title">Skills &amp; Technologies</h2>
+  <div class="skill-cats">
+    <div class="skill-cat reveal">
+      <div class="skill-cat-label">Languages</div>
+      <div class="skill-pills">
+        <span class="sp hi">Java</span><span class="sp hi">Python</span><span class="sp hi">C++</span>
+        <span class="sp hi">SQL</span><span class="sp">HTML / CSS</span><span class="sp">MATLAB</span>
+      </div>
+    </div>
+    <div class="skill-cat reveal">
+      <div class="skill-cat-label">Frameworks &amp; Libraries</div>
+      <div class="skill-pills">
+        <span class="sp hi">Android Studio</span><span class="sp hi">Firebase (Firestore &amp; Auth)</span>
+        <span class="sp hi">TensorFlow / Keras</span><span class="sp">PyTorch</span>
+        <span class="sp">Scikit-Learn</span><span class="sp">NumPy / Pandas</span>
+        <span class="sp">Flask</span><span class="sp">Material Design</span>
+      </div>
+    </div>
+    <div class="skill-cat reveal">
+      <div class="skill-cat-label">Technologies &amp; Tools</div>
+      <div class="skill-pills">
+        <span class="sp hi">Git / GitHub</span><span class="sp hi">Arduino IDE</span>
+        <span class="sp tl">Machine Learning</span><span class="sp tl">Deep Learning</span>
+        <span class="sp tl">Transfer Learning</span><span class="sp tl">Ensemble Methods</span>
+        <span class="sp tl">Computer Vision</span><span class="sp">XAI (Grad-CAM / LIME)</span>
+        <span class="sp">LLM Integration</span><span class="sp">Linux</span>
+        <span class="sp">REST APIs</span><span class="sp">PID Control</span><span class="sp">IoT</span>
+      </div>
+    </div>
+    <div class="skill-cat reveal">
+      <div class="skill-cat-label">Networking &amp; Systems</div>
+      <div class="skill-pills">
+        <span class="sp">TCP/IP</span><span class="sp">DNS &amp; DHCP</span>
+        <span class="sp">Network Troubleshooting</span><span class="sp">Server Administration</span>
+        <span class="sp">IT Infrastructure Management</span><span class="sp">Quantum Communication</span>
+      </div>
+    </div>
+    <div class="skill-cat reveal">
+      <div class="skill-cat-label">Professional</div>
+      <div class="skill-pills">
+        <span class="sp hi">Project Management</span><span class="sp hi">Team Leadership</span>
+        <span class="sp">Analytical Problem-Solving</span><span class="sp">Science Journalism</span>
+        <span class="sp">Technical Writing</span><span class="sp">Public Communication</span>
+      </div>
+    </div>
+  </div>
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">Android Development</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Deep Learning</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Embedded Systems</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Firebase</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Transfer Learning</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">PID Control</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Computer Vision</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">MVC Architecture</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Quantum Communication</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">LLM Integration</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Science Journalism</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Open Source</span><span class="marquee-item">&middot;</span>
+      <!-- duplicate for seamless loop -->
+      <span class="marquee-item">Android Development</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Deep Learning</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Embedded Systems</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Firebase</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Transfer Learning</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">PID Control</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Computer Vision</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">MVC Architecture</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Quantum Communication</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">LLM Integration</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Science Journalism</span><span class="marquee-item">&middot;</span>
+      <span class="marquee-item">Open Source</span><span class="marquee-item">&middot;</span>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+<div class="wrapper">
+  <div class="eyebrow">Academic Background</div>
+  <h2 class="sec-title">Education</h2>
+  <div class="timeline">
+    <div class="tl-entry reveal">
+      <div class="tl-date">Feb 2022 &ndash; July 2026</div>
+      <div class="tl-title">B.Sc. (Engineering) &mdash; Information &amp; Communication Technology</div>
+      <div class="tl-org">Comilla University, Cumilla &nbsp;&middot;&nbsp; Department of ICT</div>
+      <span class="tl-gpa">CGPA: 3.66 / 4.00 &nbsp;&middot;&nbsp; 7 Semesters Complete</span>
+      <div class="tl-body">Equivalent: Computer Science &amp; Information Technology &nbsp;|&nbsp; Final Exams: June 23, 2026</div>
+      <div class="cw-pills">
+        <span class="cw-pill">Software Engineering</span><span class="cw-pill">Database Management</span>
+        <span class="cw-pill">Data Communication &amp; Networks</span><span class="cw-pill">Operating Systems</span>
+        <span class="cw-pill">Web Technologies</span><span class="cw-pill">Network Security</span>
+        <span class="cw-pill">Artificial Intelligence</span><span class="cw-pill">Image Processing</span>
+        <span class="cw-pill">Microprocessor &amp; MCU</span><span class="cw-pill">Mobile App Development</span>
+        <span class="cw-pill">Optical Fiber Communication</span><span class="cw-pill">Microwave Engineering</span>
+        <span class="cw-pill">Data Structures</span>
+      </div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">2017 &ndash; 2019</div>
+      <div class="tl-title">Higher Secondary Certificate (HSC) &mdash; Science</div>
+      <div class="tl-org">Bakalia Government College, Chattogram</div>
+      <span class="tl-gpa">GPA: 4.17 / 5.00</span>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">2012 &ndash; 2017</div>
+      <div class="tl-title">Secondary School Certificate (SSC) &mdash; Science</div>
+      <div class="tl-org">South Satkania Golambari High School, Chattogram</div>
+      <span class="tl-gpa" style="background:var(--green-lt);color:var(--green);border-color:rgba(5,150,105,.2)">GPA: 5.00 / 5.00 &mdash; Perfect &#10022;</span>
+    </div>
+  </div>
+  <h3 style="font-family:var(--serif);font-size:1.3rem;color:var(--ink);margin:44px 0 16px">Certifications</h3>
+  <div class="cert-row">
+    <div class="cert-card reveal">
+      <div class="cert-ico">&#129302;</div>
+      <div><div class="cert-name">AI &amp; ML Fundamentals</div><div class="cert-issuer">Grameenphone Academy</div><div class="cert-date">Oct 2025</div></div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-ico">&#128025;</div>
+      <div><div class="cert-name">Git &amp; GitHub</div><div class="cert-issuer">IBM / Coursera</div><div class="cert-date">Jun 2025</div></div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-ico">&#127758;</div>
+      <div><div class="cert-name">Networking Fundamentals</div><div class="cert-issuer">Akamai Technologies</div><div class="cert-date">Jan 2025</div></div>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-ico">&#127891;</div>
+      <div><div class="cert-name">ICRCS 2025</div><div class="cert-issuer">International Congress on CS</div><div class="cert-date">Apr 2025</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+<div class="wrapper">
+  <div class="eyebrow">Professional Journey</div>
+  <h2 class="sec-title">Experience</h2>
+  <div class="timeline teal">
+    <div class="tl-entry reveal">
+      <div class="tl-date">Mar 2026 &ndash; Present</div>
+      <div class="tl-title">President</div>
+      <div class="tl-org">Comilla University Science Club (CoUSC) &middot; Cumilla</div>
+      <div class="tl-body">Leading strategic direction and operations for a <strong>200+ member</strong> science &amp; technology organization. Designed and deployed an automated membership system (GitHub Pages + Google Apps Script + AutoCrat) reducing admin workload by <strong>~70%</strong>. Drove digital transformation of organizational workflows. Represent CoUSC in inter-university academic collaborations and regional science events. Progressed Member &rarr; Wing Committee &rarr; IT Secretary &rarr; <strong>President</strong> over 4 years.</div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">Nov 2025 &ndash; Mar 2026</div>
+      <div class="tl-title">IT Secretary</div>
+      <div class="tl-org">Comilla University Research Society (CoURS) &middot; Cumilla</div>
+      <div class="tl-body">Architected and maintained digital infrastructure supporting <strong>100+ active researchers</strong>. Automated onboarding and admin workflows reducing manual data processing by <strong>~50%</strong>. Served as primary technical liaison between student researchers and university IT resources.</div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">Oct 2024 &ndash; Aug 2025</div>
+      <div class="tl-title">News Editor</div>
+      <div class="tl-org">Science Bee &middot; Remote Internship</div>
+      <div class="tl-body">Managed end-to-end editorial pipeline for <strong>10+ peer-reviewed science articles</strong>, ensuring 100% factual accuracy. Delivered structured writer feedback in a remote team environment. Maintained publication quality and on-time delivery under tight deadlines.</div>
+    </div>
+    <div class="tl-entry reveal">
+      <div class="tl-date">Apr 2024 &ndash; Sep 2024</div>
+      <div class="tl-title">News Researcher</div>
+      <div class="tl-org">Science Bee &middot; Remote Internship</div>
+      <div class="tl-body">Researched and authored <strong>10+ verified science articles</strong> using peer-reviewed journals and scientific databases. Collaborated with senior editors to align content with platform standards and improve publication consistency.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- MEMBERSHIPS -->
+<section id="memberships">
+<div class="wrapper">
+  <div class="eyebrow">Leadership &amp; Community</div>
+  <h2 class="sec-title">Memberships</h2>
+  <div class="prog-track reveal">
+    <div class="prog-track-title">CoUSC Leadership Progression &middot; 4 Continuous Years</div>
+    <div class="prog-steps">
+      <div class="ps"><div class="ps-dot"></div><div class="ps-info"><div class="ps-role">&#127807; Member</div><div class="ps-date">2022</div></div><span class="ps-arrow">&#8595;</span></div>
+      <div class="ps"><div class="ps-dot"></div><div class="ps-info"><div class="ps-role">&#128295; Wing Committee</div><div class="ps-date">2023</div></div><span class="ps-arrow">&#8595;</span></div>
+      <div class="ps"><div class="ps-dot"></div><div class="ps-info"><div class="ps-role">&#128187; IT Secretary</div><div class="ps-date">Sep 2024 &ndash; Mar 2026</div></div><span class="ps-arrow">&#8595;</span></div>
+      <div class="ps now"><div class="ps-dot"></div><div class="ps-info"><div class="ps-role">&#128081; President</div><div class="ps-date">Mar 2026 &ndash; Present</div></div><span style="font-size:.7rem;color:var(--green);font-weight:700">Current</span></div>
+    </div>
+  </div>
+  <div class="mem-grid">
+    <div class="mem-card current reveal">
+      <span class="mem-badge mb-current">Current</span>
+      <div class="mem-ico">&#127963;</div>
+      <div class="mem-role">President</div>
+      <div class="mem-org">Comilla University Science Club (CoUSC)</div>
+      <div class="mem-date">Mar 2026 &ndash; Present</div>
+      <div class="mem-desc">Leading strategic direction and IT operations for 200+ member science &amp; technology organization.</div>
+    </div>
+    <div class="mem-card current reveal">
+      <span class="mem-badge mb-lead">IT Lead</span>
+      <div class="mem-ico">&#128300;</div>
+      <div class="mem-role">IT Secretary</div>
+      <div class="mem-org">Comilla University Research Society (CoURS)</div>
+      <div class="mem-date">Nov 2025 &ndash; Mar 2026</div>
+      <div class="mem-desc">Architected digital infrastructure for research organization serving 100+ active researchers.</div>
+    </div>
+    <div class="mem-card reveal">
+      <div class="mem-ico">&#128225;</div>
+      <div class="mem-role">Campus Ambassador</div>
+      <div class="mem-org">ICRCS &mdash; International Congress on CS</div>
+      <div class="mem-date">Mar &ndash; May 2025</div>
+      <div class="mem-desc">Represented ICRCS 2025 at Comilla University, coordinating awareness and student participation.</div>
+    </div>
+    <div class="mem-card reveal">
+      <div class="mem-ico">&#127891;</div>
+      <div class="mem-role">Faculty Representative</div>
+      <div class="mem-org">Socchar Students' Network (SSN), CoU</div>
+      <div class="mem-date">Mar 2025 &ndash; Mar 2026</div>
+      <div class="mem-desc">Faculty-level student representative bridging communication between students and university.</div>
+    </div>
+    <div class="mem-card reveal">
+      <div class="mem-ico">&#127756;</div>
+      <div class="mem-role">Volunteer</div>
+      <div class="mem-org">2nd CoUSC National Science Festival</div>
+      <div class="mem-date">Feb &ndash; Mar 2024</div>
+      <div class="mem-desc">Organized and volunteered at the national science festival hosted by Comilla University Science Club.</div>
+    </div>
+    <div class="mem-card reveal">
+      <div class="mem-ico">&#128301;</div>
+      <div class="mem-role">Volunteer</div>
+      <div class="mem-org">20th Apes Astro-Olympiad 2025</div>
+      <div class="mem-date">July 2025</div>
+      <div class="mem-desc">Supported astronomy education and competition &mdash; contributed to organizing the 20th Apes Astro-Olympiad.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+<div class="wrapper">
+  <div class="eyebrow">Selected Works</div>
+  <h2 class="sec-title">Projects</h2>
+  <p class="sec-sub">Three engineering projects across AI/ML research, Android development, and embedded robotics &mdash; each with documented real-world outcomes.</p>
+  <div class="proj-stack">
+
+    <!-- PoxNetX -->
+    <div class="proj-card feat reveal">
+      <div class="proj-l">
+        <div class="proj-title">PoxNetX &mdash; Deep Ensemble Framework for Viral Skin Lesion Classification</div>
+        <div class="proj-sub">Final Year Thesis Research &middot; Comilla University &middot; 2026</div>
+        <div class="proj-desc">An AI-powered medical image classification system benchmarking <strong>20 CNN transfer learning architectures</strong> across <strong>6 ensemble strategies</strong> (majority voting, stacking, weighted averaging). Integrated <strong>Grad-CAM and LIME</strong> explainability for interpretable clinical decision support, with a full-stack web application powered by LLM integration for automated diagnostic reporting. Demonstrates end-to-end applied deep learning from data pipeline design through model ensembling to deployment.</div>
+        <div class="proj-metrics">
+          <span class="metric">20 CNN Architectures</span>
+          <span class="metric">6 Ensemble Strategies</span>
+          <span class="metric">XAI: Grad-CAM + LIME</span>
+          <span class="metric">LLM-Powered Reports</span>
+        </div>
+        <div class="proj-tags">
+          <span class="pt">Python</span><span class="pt">TensorFlow / Keras</span><span class="pt">Transfer Learning</span>
+          <span class="pt">Ensemble Methods</span><span class="pt">Grad-CAM</span><span class="pt">LIME</span>
+          <span class="pt">Flask</span><span class="pt">LLM API</span><span class="pt">Medical AI</span>
+        </div>
+      </div>
+      <div class="proj-r">
+        <div class="proj-badges"><span class="pb pb-thesis">Thesis</span><span class="pb pb-ai">AI / DL</span></div>
+        <a href="https://github.com/rifat-cou" target="_blank" class="gh-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- CGPA Calculator -->
+    <div class="proj-card reveal">
+      <div class="proj-l">
+        <div class="proj-title">CGPA Calculator &mdash; Android Application</div>
+        <div class="proj-sub">Mobile Application &amp; Game Development Course &middot; 2024&ndash;2025</div>
+        <div class="proj-desc">Full-stack Android application for SGPA &amp; CGPA management across 8 semesters. Built with MVC architecture, Firebase Firestore for real-time cloud sync, and Firebase Auth for secure multi-user access. AutoCompleteTextView, PDF export via PdfDocument API, and robust error handling &mdash; validated across multiple Android versions with zero crashes.</div>
+        <div class="proj-metrics">
+          <span class="metric">&#10003; 100% Calc. Accuracy</span>
+          <span class="metric">&#10003; 95% Usability Approval</span>
+          <span class="metric">&#10003; &lt;1s Response Time</span>
+        </div>
+        <div class="proj-tags">
+          <span class="pt">Java</span><span class="pt">Kotlin</span><span class="pt">XML</span>
+          <span class="pt">Firebase Firestore</span><span class="pt">Firebase Auth</span>
+          <span class="pt">Android Studio</span><span class="pt">MVC</span>
+          <span class="pt">Material Design</span><span class="pt">PDF Export</span>
+        </div>
+      </div>
+      <div class="proj-r">
+        <div class="proj-badges"><span class="pb pb-mob">Android</span></div>
+        <a href="https://drive.google.com/drive/folders/1osx04pNT3mHe0D6SYoeZMDME53P3Ipof" target="_blank" class="gh-link">&#8599; APK</a>
+        <a href="https://github.com/rifat-cou" target="_blank" class="gh-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+    <!-- Line Follower Robot -->
+    <div class="proj-card reveal">
+      <div class="proj-l">
+        <div class="proj-title">Line Follower Robot &mdash; Autonomous Embedded System</div>
+        <div class="proj-sub">Microprocessor &amp; Microcontroller Course &middot; 2023&ndash;2024</div>
+        <div class="proj-desc">Autonomous robot following a black-line path using 5-array IR sensor feedback and Arduino Nano as central control unit. Evaluated ON/OFF vs. PID control &mdash; selected PID for smoother navigation with reduced oscillation at T-junctions. 3D-printed chassis with N20 DC gear motors (600+ RPM) and L298N motor driver, all motion logic in C++. Validated across 5+ real-world scenarios.</div>
+        <div class="proj-metrics">
+          <span class="metric">&#10003; PID vs ON/OFF Benchmarked</span>
+          <span class="metric">&#10003; 5+ Scenarios Validated</span>
+          <span class="metric">&#10003; Varied Lighting Robust</span>
+        </div>
+        <div class="proj-tags">
+          <span class="pt">C++</span><span class="pt">Arduino Nano (ATmega328P)</span>
+          <span class="pt">5-Array IR Sensor</span><span class="pt">PID Algorithm</span>
+          <span class="pt">L298N Motor Driver</span><span class="pt">N20 DC Motors 600+ RPM</span>
+          <span class="pt">3D-Printed Chassis</span><span class="pt">Arduino IDE</span>
+        </div>
+      </div>
+      <div class="proj-r">
+        <div class="proj-badges"><span class="pb pb-hw">Embedded</span></div>
+        <a href="https://github.com/rifat-cou" target="_blank" class="gh-link">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          GitHub
+        </a>
+      </div>
+    </div>
+
+  </div>
+  <p style="margin-top:20px;font-size:.85rem;color:var(--ink3)">
+    <a href="https://github.com/rifat-cou" target="_blank">View all repositories on GitHub &rarr;</a>
+  </p>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+<div class="wrapper">
+  <div class="eyebrow">Let's Create Together</div>
+  <h2 class="sec-title">Get In Touch</h2>
+  <p class="contact-intro">I'm always open to discussing new opportunities, research collaborations, or just a good conversation about AI and engineering. Whether you're a recruiter, fellow developer, or researcher &mdash; feel free to reach out.</p>
+  <div class="otw reveal">
+    <div class="avail-dot" style="flex-shrink:0"></div>
+    <span><strong>Open to full-time opportunities.</strong> &mdash; Open to relocate to Dhaka or work remotely.</span>
+  </div>
+  <a href="mailto:rifat.jm223@gmail.com" class="contact-email">rifat.jm223@gmail.com</a>
+  <div class="contact-links">
+    <a href="mailto:rifat.jm223@gmail.com" class="cl"><span>&#9993;</span> Email</a>
+    <!--<a href="tel:+8801521536261" class="cl"><span>&#128222;</span> +880 1521 536261</a>-->
+    <a href="https://linkedin.com/in/rifatmi71" target="_blank" class="cl"><span>&#128188;</span> LinkedIn</a>
+    <a href="https://github.com/rifat-cou" target="_blank" class="cl"><span>&#128025;</span> GitHub</a>
+    <a href="https://sites.google.com/view/rifat-cou/home" target="_blank" class="cl"><span>&#127760;</span> Google Sites</a>
+    <a href="https://linktr.ee/rifat.cou" target="_blank" class="cl"><span>&#127807;</span> Linktree</a>
+  </div>
+  <p style="font-size:.82rem;color:var(--ink3);line-height:1.7">
+    &#128205; Cumilla, Chittagong Division, Bangladesh &nbsp;&middot;&nbsp; Open to relocate: Dhaka &nbsp;&middot;&nbsp; English (B1) &nbsp;&middot;&nbsp; Bangla (Native)
+  </p>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><span style="font-weight:700;color:var(--ink2)">Mohammad Rifatul Islam Marof</span> &nbsp;&middot;&nbsp; ICT Graduate, Comilla University 2026</div>
+  <div class="footer-links">
+    <a href="https://linkedin.com/in/rifatmi71" target="_blank">LinkedIn</a>
+    <a href="https://github.com/rifat-cou" target="_blank">GitHub</a>
+    <a href="mailto:rifat.jm223@gmail.com">Email</a>
+    <a href="https://sites.google.com/view/rifat-cou" target="_blank">Portfolio</a>
+  </div>
+  <div>&copy; 2026 Rifatul Islam Marof</div>
+</footer>
+
+<script>
+/* THEME — day default, moon icon shown (click to go dark) */
+const root=document.documentElement;
+const btn=document.getElementById('themeBtn');
+let dark=localStorage.getItem('theme')==='dark';
+function applyTheme(){
+  root.setAttribute('data-theme',dark?'dark':'light');
+  btn.innerHTML=dark?'&#9728;&#65039;':'&#127769;';
+}
+applyTheme();
+btn.addEventListener('click',()=>{dark=!dark;localStorage.setItem('theme',dark?'dark':'light');applyTheme()});
+
+/* MOBILE MENU */
+function toggleMenu(){
+  document.getElementById('mobileNav').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+function closeMenu(){
+  document.getElementById('mobileNav').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+/* SCROLL SPY */
+const ids=['hero','about','skills','education','experience','memberships','projects','contact'];
+const links=document.querySelectorAll('.nav-links a,.mobile-nav a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  ids.forEach(id=>{const s=document.getElementById(id);if(s&&window.scrollY>=s.offsetTop-100)cur=id});
+  links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+/* SCROLL REVEAL */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');ro.unobserve(e.target)}});
+},{threshold:.07,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+</script>
+</body>
+</html>
