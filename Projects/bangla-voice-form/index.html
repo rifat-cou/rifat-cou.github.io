@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bangla Speech Study — Voice Recording</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/RecordRTC/5.6.2/RecordRTC.min.js"></script>
+<style>
+/* ── Design tokens ──────────────────────────────────────────── */
+:root {
+  --bg:       #F4ECC8;   /* warm rice paper */
+  --surface:  #FFFFFF;
+  --surface2: #F9F6ED;
+  --forest:   #0B2D1E;   /* deep forest     */
+  --green:    #1A7A52;   /* primary action  */
+  --green-lt: #E4F2EB;
+  --accent:   #E8833A;   /* turmeric/ochre  */
+  --accent-lt:#FDF0E4;
+  --red:      #C0392B;
+  --text:     #1A1A1A;
+  --muted:    #4A6858;
+  --border:   #C8D8C0;
+  --radius:   10px;
+  --shadow:   0 2px 14px rgba(11,45,30,.10);
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:system-ui,-apple-system,sans-serif;
+     background:var(--bg);color:var(--text);min-height:100vh;font-size:15px;line-height:1.65;}
+button{cursor:pointer;border:none;outline:none;font-family:inherit;font-size:inherit;}
+input,select,textarea{font-family:inherit;}
+
+/* ── Sticky header ──────────────────────────────────────────── */
+.topbar{position:sticky;top:0;z-index:100;background:var(--forest);
+        color:#fff;display:flex;align-items:center;gap:12px;padding:14px 20px;}
+.topbar svg{flex-shrink:0;}
+.topbar-text{flex:1;}
+.topbar-title{font-family:Georgia,serif;font-size:15px;font-weight:700;}
+.topbar-sub{font-size:11px;opacity:.55;}
+.topbar-prog{font-size:12px;opacity:.8;text-align:right;font-weight:600;}
+.prog-bar{height:3px;background:rgba(255,255,255,.15);margin-top:8px;border-radius:2px;}
+.prog-fill{height:3px;background:var(--accent);border-radius:2px;
+           transition:width .5s ease;width:0%;}
+
+/* ── Page wrapper ───────────────────────────────────────────── */
+.wrap{max-width:580px;margin:0 auto;padding:24px 16px 80px;}
+
+/* ── Screen management ──────────────────────────────────────── */
+.screen{display:none;animation:fadeIn .25s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* ── Typography ─────────────────────────────────────────────── */
+.page-title{font-family:Georgia,serif;font-size:22px;font-weight:700;
+            color:var(--forest);margin-bottom:6px;line-height:1.3;}
+.page-sub{color:var(--muted);font-size:14px;margin-bottom:20px;}
+
+/* ── Card ───────────────────────────────────────────────────── */
+.card{background:var(--surface);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:22px;margin-bottom:16px;}
+.card-title{font-weight:700;font-size:14px;color:var(--forest);
+            margin-bottom:14px;padding-bottom:10px;
+            border-bottom:1px solid var(--border);}
+
+/* ── Info / callout boxes ───────────────────────────────────── */
+.callout{border-left:4px solid var(--green);background:var(--green-lt);
+         padding:11px 14px;border-radius:0 7px 7px 0;font-size:13.5px;
+         color:#1B3A28;margin-bottom:14px;line-height:1.6;}
+.callout strong{color:var(--green);}
+.callout-amber{border-color:var(--accent);background:var(--accent-lt);color:#4A2E08;}
+.callout-amber strong{color:var(--accent);}
+.callout-red{border-color:var(--red);background:#FDF0EE;color:#4A0C08;}
+
+/* ── Form elements ──────────────────────────────────────────── */
+.field{margin-bottom:18px;}
+.field-label{display:block;font-size:12px;font-weight:700;color:var(--muted);
+             letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;}
+.field select,.field input[type=text]{
+  width:100%;padding:10px 13px;border:1.5px solid var(--border);
+  border-radius:7px;background:var(--surface);color:var(--text);
+  font-size:14px;transition:border-color .15s;}
+.field select:focus,.field input[type=text]:focus{
+  border-color:var(--green);outline:none;box-shadow:0 0 0 3px rgba(26,122,82,.1);}
+
+.radio-row{display:flex;gap:8px;flex-wrap:wrap;}
+.radio-chip{display:flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:6px;padding:7px 12px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--text);
+  transition:all .15s;user-select:none;}
+.radio-chip:has(input:checked){background:var(--green-lt);
+  border-color:var(--green);color:var(--green);}
+.radio-chip input{accent-color:var(--green);width:14px;height:14px;}
+
+.checkbox-row{display:flex;align-items:flex-start;gap:10px;margin-top:4px;}
+.checkbox-row input{margin-top:3px;accent-color:var(--green);
+                    width:17px;height:17px;flex-shrink:0;cursor:pointer;}
+.checkbox-row span{font-size:13.5px;line-height:1.55;cursor:pointer;}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;
+     gap:8px;padding:12px 22px;border-radius:8px;font-size:15px;
+     font-weight:600;transition:all .15s;line-height:1;}
+.btn-primary{background:var(--green);color:#fff;width:100%;
+             box-shadow:0 2px 8px rgba(26,122,82,.3);}
+.btn-primary:hover:not(:disabled){background:#156640;}
+.btn-primary:disabled{background:#9BB8AD;cursor:not-allowed;box-shadow:none;}
+.btn-ghost{background:transparent;color:var(--green);
+           border:1.5px solid var(--green);}
+.btn-ghost:hover{background:var(--green-lt);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{background:#a02822;}
+.btn-sm{padding:9px 16px;font-size:13px;}
+
+/* ── Connection test ────────────────────────────────────────── */
+.conn-row{display:flex;align-items:center;gap:10px;margin-top:8px;}
+.conn-indicator{width:10px;height:10px;border-radius:50%;
+                background:#CCC;flex-shrink:0;transition:background .3s;}
+.conn-indicator.ok{background:#22C55E;}
+.conn-indicator.fail{background:var(--red);}
+.conn-indicator.checking{background:var(--accent);
+  animation:blink .7s ease-in-out infinite alternate;}
+@keyframes blink{to{opacity:.3;}}
+.conn-text{font-size:12.5px;color:var(--muted);}
+
+/* ── Progress dots ──────────────────────────────────────────── */
+.dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;
+      margin:0 0 18px;}
+.dot{width:30px;height:30px;border-radius:50%;display:flex;
+     align-items:center;justify-content:center;font-size:11px;
+     font-weight:700;border:2px solid var(--border);color:var(--muted);
+     background:var(--surface);transition:all .3s;cursor:default;}
+.dot.done{background:var(--green);border-color:var(--green);color:#fff;}
+.dot.active{border-color:var(--accent);color:var(--accent);
+            background:var(--accent-lt);}
+.dot.failed{background:#FEE2E2;border-color:var(--red);color:var(--red);}
+
+/* ── Emotion prompt ─────────────────────────────────────────── */
+.emotion-meta{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.emo-badge{background:var(--forest);color:#fff;font-size:10px;
+           font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+           padding:4px 10px;border-radius:4px;}
+.emo-counter{font-size:12px;color:var(--muted);}
+.sentence-bn{font-family:Georgia,serif;font-size:22px;color:var(--forest);
+             line-height:1.45;margin:10px 0 4px;}
+.sentence-en{font-size:13px;color:var(--muted);margin-bottom:14px;}
+.acting-tip{background:var(--accent-lt);border-left:3px solid var(--accent);
+            padding:9px 13px;border-radius:0 7px 7px 0;
+            font-size:13px;color:#5A3010;margin-bottom:22px;line-height:1.5;}
+.acting-tip b{color:var(--accent);}
+
+/* ── Oscilloscope canvas — signature element ────────────────── */
+.scope-wrap{background:var(--forest);border-radius:8px;overflow:hidden;
+            margin:18px 0;}
+#waveform{display:block;width:100%;height:80px;}
+.scope-timer{text-align:center;font-size:12px;color:var(--accent);
+             font-weight:700;letter-spacing:.12em;
+             padding:5px 0 10px;background:var(--forest);}
+
+/* ── Record button ──────────────────────────────────────────── */
+.rec-area{display:flex;flex-direction:column;align-items:center;gap:12px;
+          padding:20px 0;}
+.rec-btn{width:78px;height:78px;border-radius:50%;font-size:28px;
+         display:flex;align-items:center;justify-content:center;
+         transition:all .2s;border:none;}
+.rec-btn-idle{background:var(--green);color:#fff;
+              box-shadow:0 4px 16px rgba(26,122,82,.4);}
+.rec-btn-idle:hover{background:#156640;transform:scale(1.06);}
+.rec-btn-stop{background:var(--red);color:#fff;
+              box-shadow:0 0 0 0 rgba(192,57,43,.5);
+              animation:pulse 1.4s ease-in-out infinite;}
+@keyframes pulse{
+  0%  {box-shadow:0 0 0 0 rgba(192,57,43,.5);}
+  70% {box-shadow:0 0 0 18px rgba(192,57,43,0);}
+  100%{box-shadow:0 0 0 0 rgba(192,57,43,0);}
+}
+.rec-hint{font-size:13px;color:var(--muted);text-align:center;}
+.rec-hint.recording{color:var(--red);font-weight:600;}
+
+/* ── Playback panel ─────────────────────────────────────────── */
+.play-panel{background:var(--surface2);border-radius:8px;
+            padding:16px;margin-bottom:14px;}
+.play-label{font-size:12px;color:var(--muted);margin-bottom:8px;
+            display:flex;align-items:center;gap:6px;}
+.play-label::before{content:'▶';color:var(--green);}
+audio{width:100%;border-radius:6px;margin-bottom:12px;
+      accent-color:var(--green);}
+.play-actions{display:flex;gap:10px;}
+.play-actions .btn{flex:1;font-size:14px;padding:10px 14px;}
+
+/* ── Upload states ──────────────────────────────────────────── */
+.state-center{text-align:center;padding:28px 16px;}
+.spinner{width:38px;height:38px;border:3px solid var(--border);
+         border-top-color:var(--green);border-radius:50%;
+         animation:spin .75s linear infinite;margin:0 auto 14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.upload-ok{font-size:44px;margin-bottom:8px;}
+.upload-ok-text{font-weight:700;color:var(--green);font-size:16px;margin-bottom:6px;}
+.upload-next{font-size:13px;color:var(--muted);}
+
+/* ── Done screen ────────────────────────────────────────────── */
+.done-hero{font-size:54px;text-align:center;margin:8px 0;}
+.done-title{font-family:Georgia,serif;font-size:22px;color:var(--forest);
+            text-align:center;margin-bottom:8px;}
+.file-log{background:var(--forest);border-radius:8px;
+          padding:16px 18px;font-family:'Courier New',monospace;
+          font-size:12px;color:#A8E6B0;line-height:1.9;
+          max-height:220px;overflow-y:auto;}
+.summary-row{display:flex;align-items:center;gap:10px;
+             padding:8px 0;border-bottom:1px solid var(--border);
+             font-size:13px;}
+.summary-row:last-child{border-bottom:none;}
+.summary-emo{font-weight:700;width:100px;color:var(--forest);}
+.summary-file{flex:1;font-family:monospace;font-size:12px;color:var(--muted);}
+.summary-check{color:var(--green);font-size:16px;}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media(max-width:440px){
+  .sentence-bn{font-size:18px;}
+  .rec-btn{width:68px;height:68px;font-size:24px;}
+  .topbar{padding:12px 14px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ TOP BAR ════════════════════ -->
+<div class="topbar">
+  <!-- Waveform logo icon -->
+  <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+    <rect width="30" height="30" rx="6" fill="rgba(255,255,255,.08)"/>
+    <polyline points="2,15 6,8 10,20 14,5 18,22 22,11 26,15 28,15"
+      stroke="#E8833A" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <div class="topbar-text">
+    <div class="topbar-title">Bangla Speech Study</div>
+    <div class="topbar-sub">Voice &amp; Dialect Research — Comilla University</div>
+  </div>
+  <div>
+    <div class="topbar-prog" id="topbar-prog"></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 1  —  LANDING & CONSENT
+═════════════════════════════════════════════════════════════ -->
+<div id="s-landing" class="screen active">
+  <br>
+  <p class="page-title">Bangla Regional Dialect &amp;<br>Emotional Speech Study</p>
+  <p class="page-sub">Your voice helps us understand how Bangla sounds across different regions and emotions.</p>
+
+  <div class="card">
+    <div class="callout">
+      <strong>What you will do:</strong>
+      Read 10 short Bangla sentences — each with a different emotion. You record directly in this page, listen back, and submit when satisfied. Each sentence takes about 5–10 seconds.
+    </div>
+    <div class="callout callout-amber">
+      <strong>Your privacy:</strong>
+      Recordings go directly to the researcher's Google Drive. No other service receives your audio. You are not asked for your name. Participation is fully voluntary.
+    </div>
+
+    <div class="card-title">What you need</div>
+    <div style="font-size:13.5px;color:var(--muted);line-height:2;margin-bottom:18px;">
+      ✔&nbsp; A device with a microphone (phone, laptop, or tablet)<br>
+      ✔&nbsp; A quiet room<br>
+      ✔&nbsp; About 5 minutes
+    </div>
+
+    <!-- Connection test -->
+    <div class="card-title">Connection check</div>
+    <div class="callout-amber callout" id="conn-box" style="margin-bottom:14px">
+      <strong>Before you begin</strong>, check that the form can reach the storage server.
+      <div class="conn-row" style="margin-top:8px;">
+        <div class="conn-indicator" id="conn-dot"></div>
+        <span class="conn-text" id="conn-text">Not checked yet</span>
+        <button class="btn btn-ghost btn-sm" onclick="testConnection()" style="margin-left:auto">
+          Test connection
+        </button>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:4px;">
+      <div class="checkbox-row">
+        <input type="checkbox" id="consent" onchange="updateStartBtn()">
+        <span onclick="document.getElementById('consent').click()">
+          I understand that my voice recordings will be used for academic research and
+          may be released as an open dataset under CC-BY 4.0. I participate voluntarily.
+        </span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-consent-next" disabled
+            style="margin-top:8px;" onclick="goTo('s-meta')">
+      Continue →
+    </button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 2  —  SPEAKER METADATA
+═════════════════════════════════════════════════════════════ -->
+<div id="s-meta" class="screen">
+  <br>
+  <p class="page-title">About you</p>
+  <p class="page-sub">This information is stored alongside your recordings to help organise the dataset. No name or contact details required.</p>
+
+  <div class="card">
+    <div class="field">
+      <span class="field-label">Age range *</span>
+      <select id="f-age">
+        <option value="">— Select —</option>
+        <option>18–25</option><option>26–35</option>
+        <option>36–50</option><option>51+</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Gender</span>
+      <div class="radio-row">
+        <label class="radio-chip"><input type="radio" name="gender" value="Male">Male</label>
+        <label class="radio-chip"><input type="radio" name="gender" value="Female">Female</label>
+        <label class="radio-chip"><input type="radio" name="gender" value="Non-binary">Non-binary</label>
+        <label class="radio-chip"><input type="radio" name="gender" value="Prefer not to say">Prefer not to say</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Native dialect / region *</span>
+      <select id="f-dialect">
+        <option value="">— Select your primary dialect —</option>
+        <option>Dhaka Standard</option>
+        <option>Chittagong (Chattagram)</option>
+        <option>Sylheti</option>
+        <option>Noakhali</option>
+        <option>Cumilla</option>
+        <option>Rajshahi</option>
+        <option>Barishal</option>
+        <option>Rangpur</option>
+        <option>Kolkata / West Bengali</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Education level</span>
+      <div class="radio-row">
+        <label class="radio-chip"><input type="radio" name="edu" value="SSC/O-level">SSC</label>
+        <label class="radio-chip"><input type="radio" name="edu" value="HSC/A-level">HSC</label>
+        <label class="radio-chip"><input type="radio" name="edu" value="Undergraduate">Undergrad</label>
+        <label class="radio-chip"><input type="radio" name="edu" value="Postgraduate">Postgrad</label>
+        <label class="radio-chip"><input type="radio" name="edu" value="Other">Other</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Recording device</span>
+      <div class="radio-row">
+        <label class="radio-chip"><input type="radio" name="device" value="Smartphone">Smartphone</label>
+        <label class="radio-chip"><input type="radio" name="device" value="Laptop mic">Laptop mic</label>
+        <label class="radio-chip"><input type="radio" name="device" value="External mic">External mic</label>
+        <label class="radio-chip"><input type="radio" name="device" value="Headset">Headset</label>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Recording environment</span>
+      <div class="radio-row">
+        <label class="radio-chip"><input type="radio" name="env" value="Quiet room">Quiet room</label>
+        <label class="radio-chip"><input type="radio" name="env" value="Home">Home</label>
+        <label class="radio-chip"><input type="radio" name="env" value="Office">Office</label>
+        <label class="radio-chip"><input type="radio" name="env" value="Outdoor">Outdoor</label>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:4px;">
+      Fields marked <strong>*</strong> are required.
+    </div>
+
+    <button class="btn btn-primary" onclick="startRecording()" style="margin-top:6px;">
+      Begin Recording →
+    </button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 3  —  RECORDING STATION
+═════════════════════════════════════════════════════════════ -->
+<div id="s-rec" class="screen">
+  <br>
+  <!-- Progress dots -->
+  <div class="dots" id="dots"></div>
+
+  <div class="card">
+    <!-- Emotion header -->
+    <div class="emotion-meta">
+      <div class="emo-badge" id="r-badge">Emotion</div>
+      <div class="emo-counter" id="r-counter">1 of 10</div>
+    </div>
+    <p class="sentence-bn" id="r-bn">—</p>
+    <p class="sentence-en" id="r-en">—</p>
+    <div class="acting-tip"><b>Acting tip:</b> <span id="r-tip">—</span></div>
+
+    <!-- STATE: idle -->
+    <div id="st-idle" class="rec-area">
+      <button class="rec-btn rec-btn-idle" id="btn-record" onclick="recStart()">🎙️</button>
+      <span class="rec-hint">Tap to start recording</span>
+    </div>
+
+    <!-- STATE: recording (oscilloscope shown here) -->
+    <div id="st-rec" style="display:none;">
+      <div class="scope-wrap">
+        <canvas id="waveform" height="80"></canvas>
+        <div class="scope-timer" id="r-timer">0:00</div>
+      </div>
+      <div class="rec-area" style="padding:12px 0 20px;">
+        <button class="rec-btn rec-btn-stop" onclick="recStop()">⏹</button>
+        <span class="rec-hint recording">Recording — tap to stop</span>
+      </div>
+    </div>
+
+    <!-- STATE: recorded (playback + actions) -->
+    <div id="st-played" style="display:none;" class="play-panel">
+      <div class="play-label">Listen back — is this take good?</div>
+      <audio id="audio-player" controls></audio>
+      <div class="play-actions">
+        <button class="btn btn-ghost btn-sm" onclick="recReset()">↺ Re-record</button>
+        <button class="btn btn-primary btn-sm" onclick="recSubmit()">✓ Submit this</button>
+      </div>
+    </div>
+
+    <!-- STATE: uploading -->
+    <div id="st-upload" style="display:none;" class="state-center">
+      <div class="spinner"></div>
+      <div style="color:var(--muted);font-size:14px;">Saving to Google Drive…</div>
+    </div>
+
+    <!-- STATE: uploaded / success -->
+    <div id="st-done" style="display:none;" class="state-center">
+      <div class="upload-ok">✅</div>
+      <div class="upload-ok-text">Saved!</div>
+      <div class="upload-next" id="next-hint">Loading next…</div>
+    </div>
+
+    <!-- STATE: error -->
+    <div id="st-err" style="display:none;" class="state-center">
+      <div class="upload-ok">⚠️</div>
+      <div style="font-weight:700;color:var(--red);font-size:15px;margin-bottom:6px;">
+        Upload failed
+      </div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:16px;" id="err-msg">
+        Check your connection and try again.
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;">
+        <button class="btn btn-ghost btn-sm" onclick="recReset()">↺ Re-record</button>
+        <button class="btn btn-primary btn-sm" onclick="recSubmit()">↻ Retry upload</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skip button (shows after 2nd attempt) -->
+  <div id="skip-area" style="display:none;text-align:center;">
+    <button class="btn btn-ghost btn-sm" onclick="recSkip()">
+      Skip this sentence →
+    </button>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════════════════
+     SCREEN 4  —  COMPLETE
+═════════════════════════════════════════════════════════════ -->
+<div id="s-done" class="screen">
+  <br>
+  <div class="card" style="text-align:center;">
+    <div class="done-hero">🎉</div>
+    <p class="done-title">All recordings submitted!</p>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:6px;line-height:1.7;">
+      Thank you for contributing to Bangla speech research.<br>
+      Your recordings have been sent to Google Drive.
+    </p>
+    <div style="background:var(--green-lt);border-radius:7px;padding:10px 16px;
+                margin-top:12px;font-size:13px;color:var(--forest);">
+      Your participant ID: <strong id="done-id" style="font-family:monospace;"></strong>
+    </div>
+  </div>
+
+  <!-- File log -->
+  <div class="card">
+    <div class="card-title">Files saved to Google Drive</div>
+    <div class="file-log" id="file-log"></div>
+  </div>
+
+  <!-- Summary table -->
+  <div class="card">
+    <div class="card-title">Recording summary</div>
+    <div id="summary-rows"></div>
+  </div>
+
+  <div class="card">
+    <div class="callout callout-amber">
+      If any recordings are missing from the Drive, contact the researcher and
+      quote your <strong>participant ID</strong> shown above.
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT
+═════════════════════════════════════════════════════════════ -->
+<script>
+/* ── CONFIG ─── change these before deploying ─────────────────────── */
+const APPS_SCRIPT_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+const SAMPLE_RATE     = 16000;   // 16000 = standard for speech ML; 44100 = highest quality
+/* ─────────────────────────────────────────────────────────────────── */
+
+const EMOTIONS = [
+  { id:'neutral',   en:'Neutral',
+    bn:'আজকে আবহাওয়া ভালো আছে।',
+    tr:'The weather is nice today.',
+    tip:'Calm, flat voice — like reading a news headline. No emotion.' },
+  { id:'angry',     en:'Angry',
+    bn:'তুমি কীভাবে এটা করতে পারলে!',
+    tr:'How could you do this!',
+    tip:'Raise your voice. Stress each word. Show frustration clearly.' },
+  { id:'happy',     en:'Happy',
+    bn:'আমি আজকে অনেক খুশি।',
+    tr:'I am very happy today.',
+    tip:'Smile while speaking. Light, warm, and a little faster than usual.' },
+  { id:'sad',       en:'Sad',
+    bn:'আমি সত্যিই অনেক কষ্টে আছি।',
+    tr:'I am truly in a lot of pain.',
+    tip:'Slow down. Lower your pitch. Let the heaviness show in every word.' },
+  { id:'fearful',   en:'Fearful',
+    bn:'কে ওখানে? কে আছে ওখানে?',
+    tr:'Who is there? Who is there?',
+    tip:'Sound nervous and alert. Keep the voice slightly breathy and small.' },
+  { id:'surprised', en:'Surprised',
+    bn:'সত্যিই? এটা কি সত্য হতে পারে?',
+    tr:'Really? Can this be true?',
+    tip:'Let your pitch rise sharply. Wide-eyed energy in your voice.' },
+  { id:'disgusted', en:'Disgusted',
+    bn:'এটা একদম সহ্য করা যাচ্ছে না।',
+    tr:'This is absolutely unbearable.',
+    tip:'Wrinkle your nose. Let the disgust drip from every word.' },
+  { id:'excited',   en:'Excited',
+    bn:'এটা অসাধারণ! বিশ্বাসই করতে পারছি না!',
+    tr:'This is amazing! I cannot believe it!',
+    tip:'Fast, high energy, loud. You simply cannot contain yourself.' },
+  { id:'bored',     en:'Bored',
+    bn:'আবারও একই কথা বলছ তুমি।',
+    tr:'You are saying the same thing again.',
+    tip:'Flat, slow, utterly uninterested — like you\'ve heard it a hundred times.' },
+  { id:'sarcastic', en:'Sarcastic',
+    bn:'হ্যাঁ, তুমি তো সব জানো।',
+    tr:'Yes, you know everything, of course.',
+    tip:'Slow, knowing tone. Drag out the meaning. Make it obvious you don\'t mean it.' },
+];
+
+/* ── App state ──────────────────────────────────────────────── */
+const A = {
+  speakerId:  '',
+  metadata:   {},
+  idx:        0,
+  recState:   'idle',
+  blob:       null,
+  audioUrl:   null,
+  recorder:   null,
+  stream:     null,
+  analyser:   null,
+  audioCtx:   null,
+  raf:        null,
+  sec:        0,
+  tick:       null,
+  results:    [],   // {id, filename, status:'ok'|'failed'|'skipped'}
+  attempts:   0,
+};
+
+/* ── Screen navigation ──────────────────────────────────────── */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Connection test ─────────────────────────────────────────── */
+async function testConnection(){
+  const dot  = document.getElementById('conn-dot');
+  const txt  = document.getElementById('conn-text');
+  dot.className = 'conn-indicator checking';
+  txt.textContent = 'Checking…';
+  try {
+    if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
+      throw new Error('URL not configured yet');
+    }
+    const r = await fetch(APPS_SCRIPT_URL, {mode:'cors'});
+    const j = await r.json();
+    if(j.status === 'ok'){
+      dot.className = 'conn-indicator ok';
+      txt.textContent = '✓ Connected — server is ready';
+    } else throw new Error('Unexpected response');
+  } catch(e){
+    dot.className = 'conn-indicator fail';
+    txt.textContent = '✗ ' + (e.message === 'URL not configured yet'
+      ? 'Please paste your Apps Script URL into index.html first.'
+      : 'Cannot reach server. Check your URL or network.');
+  }
+}
+
+/* ── Landing consent ─────────────────────────────────────────── */
+function updateStartBtn(){
+  const ok = document.getElementById('consent').checked;
+  document.getElementById('btn-consent-next').disabled = !ok;
+}
+
+/* ── Metadata → start recording ──────────────────────────────── */
+function startRecording(){
+  const age     = document.getElementById('f-age').value;
+  const dialect = document.getElementById('f-dialect').value;
+  if(!age || !dialect){
+    alert('Please select your age range and dialect before continuing.');
+    return;
+  }
+  const getR = n => { const el=document.querySelector(`input[name="${n}"]:checked`); return el?el.value:''; };
+  A.metadata = {
+    age, dialect,
+    gender:      getR('gender'),
+    education:   getR('edu'),
+    device:      getR('device'),
+    environment: getR('env'),
+  };
+  const pfx = dialect.replace(/[^A-Za-z]/g,'').slice(0,3).toUpperCase() || 'SPK';
+  A.speakerId = pfx + '_' + Date.now().toString(36).toUpperCase();
+  A.idx = 0; A.results = [];
+  buildDots();
+  loadEmotion(0);
+  goTo('s-rec');
+}
+
+/* ── Dots ────────────────────────────────────────────────────── */
+function buildDots(){
+  const c = document.getElementById('dots');
+  c.innerHTML = EMOTIONS.map((e,i)=>`<div class="dot" id="d${i}">${i+1}</div>`).join('');
+}
+function refreshDots(){
+  EMOTIONS.forEach((_,i)=>{
+    const d = document.getElementById('d'+i);
+    const r = A.results.find(x=>x.idx===i);
+    if(r){
+      d.className = 'dot '+(r.status==='ok'?'done':r.status==='skipped'?'active':'failed');
+    } else {
+      d.className = 'dot'+(i===A.idx?' active':'');
+    }
+  });
+  const done = A.results.filter(r=>r.status==='ok').length;
+  const pct  = Math.round((done/EMOTIONS.length)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('topbar-prog').textContent = done+'/'+EMOTIONS.length;
+}
+
+/* ── Load emotion prompt ──────────────────────────────────────── */
+function loadEmotion(i){
+  A.idx = i; A.attempts = 0;
+  const e = EMOTIONS[i];
+  document.getElementById('r-badge').textContent   = e.en;
+  document.getElementById('r-counter').textContent = `${i+1} of ${EMOTIONS.length}`;
+  document.getElementById('r-bn').textContent      = e.bn;
+  document.getElementById('r-en').textContent      = e.tr;
+  document.getElementById('r-tip').textContent     = e.tip;
+  document.getElementById('skip-area').style.display = 'none';
+  setState('idle');
+  refreshDots();
+}
+
+/* ── State machine ───────────────────────────────────────────── */
+function setState(s){
+  A.recState = s;
+  ['st-idle','st-rec','st-played','st-upload','st-done','st-err']
+    .forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('st-'+s).style.display = '';
+}
+
+/* ── RECORD start ─────────────────────────────────────────────── */
+async function recStart(){
+  try {
+    // Explicitly disabled: browsers turn these three ON by default,
+    // which processes/filters the signal (echo cancellation, noise
+    // suppression, auto gain). For dialect + emotion research we want
+    // the raw microphone signal, unmodified, saved exactly as spoken.
+    A.stream = await navigator.mediaDevices.getUserMedia({
+      audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl:  false,
+        channelCount:     1,
+      },
+      video: false
+    });
+  } catch(e){
+    alert('Microphone access was denied.\n\nPlease allow microphone access in your browser and refresh the page.');
+    return;
+  }
+  // Web Audio API for oscilloscope
+  A.audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+  A.analyser  = A.audioCtx.createAnalyser();
+  A.analyser.fftSize = 2048;
+  A.audioCtx.createMediaStreamSource(A.stream).connect(A.analyser);
+
+  // RecordRTC → WAV
+  A.recorder = new RecordRTC(A.stream, {
+    type:                  'audio',
+    mimeType:              'audio/wav',
+    recorderType:          RecordRTC.StereoAudioRecorder,
+    numberOfAudioChannels: 1,
+    desiredSampRate:       SAMPLE_RATE,
+    bufferSize:            4096,
+  });
+  A.recorder.startRecording();
+
+  A.sec = 0; updateTimer();
+  A.tick = setInterval(()=>{ A.sec++; updateTimer(); },1000);
+  sizeCanvas(); drawScope();
+  setState('rec');
+}
+
+/* ── RECORD stop ──────────────────────────────────────────────── */
+function recStop(){
+  clearInterval(A.tick);
+  cancelAnimationFrame(A.raf);
+  A.analyser=null;
+  if(A.audioCtx){ A.audioCtx.close(); A.audioCtx=null; }
+
+  A.recorder.stopRecording(()=>{
+    A.blob = A.recorder.getBlob();
+    if(A.audioUrl) URL.revokeObjectURL(A.audioUrl);
+    A.audioUrl = URL.createObjectURL(A.blob);
+    A.stream.getTracks().forEach(t=>t.stop());
+    document.getElementById('audio-player').src = A.audioUrl;
+    setState('played');
+  });
+}
+
+/* ── RECORD reset (re-record) ────────────────────────────────── */
+function recReset(){
+  A.blob=null;
+  if(A.audioUrl){ URL.revokeObjectURL(A.audioUrl); A.audioUrl=null; }
+  A.attempts++;
+  if(A.attempts>=2) document.getElementById('skip-area').style.display='block';
+  setState('idle');
+}
+
+/* ── SKIP (optional, appears after 2nd failed attempt) ──────── */
+function recSkip(){
+  A.results.push({idx:A.idx, id:EMOTIONS[A.idx].id, filename:'—', status:'skipped'});
+  advance();
+}
+
+/* ── SUBMIT → upload to Google Drive via Apps Script ─────────── */
+async function recSubmit(){
+  setState('upload');
+  const em  = EMOTIONS[A.idx];
+  const fn  = `${A.speakerId}_${String(A.idx+1).padStart(2,'0')}_${em.id}.wav`;
+
+  // Blob → base64
+  const b64 = await new Promise((res,rej)=>{
+    const fr = new FileReader();
+    fr.onload  = ()=>res(fr.result.split(',')[1]);
+    fr.onerror = rej;
+    fr.readAsDataURL(A.blob);
+  });
+
+  const payload = {
+    speakerId:  A.speakerId,
+    emotion:    em.id,
+    filename:   fn,
+    sampleRate: SAMPLE_RATE,
+    audio:      b64,
+    metadata:   A.metadata,
+    timestamp:  new Date().toISOString(),
+  };
+
+  try {
+    await fetch(APPS_SCRIPT_URL, {
+      method:  'POST',
+      body:    JSON.stringify(payload),
+      headers: {'Content-Type':'text/plain;charset=utf-8'},
+      mode:    'no-cors',   // Guarantees delivery; response unreadable cross-origin
+    });
+    A.results.push({idx:A.idx, id:em.id, filename:fn, status:'ok'});
+    setState('done');
+    const nxt = A.idx+1;
+    document.getElementById('next-hint').textContent =
+      nxt < EMOTIONS.length ? `Next: ${EMOTIONS[nxt].en} →` : 'Finishing up…';
+    setTimeout(()=>advance(), 1800);
+  } catch(err){
+    document.getElementById('err-msg').textContent = err.message||'Network error';
+    setState('err');
+  }
+}
+
+/* ── Advance to next emotion or finish ────────────────────────── */
+function advance(){
+  refreshDots();
+  const next = A.idx+1;
+  if(next < EMOTIONS.length){
+    loadEmotion(next);
+  } else {
+    showDone();
+  }
+}
+
+/* ── Done screen ──────────────────────────────────────────────── */
+function showDone(){
+  document.getElementById('done-id').textContent = A.speakerId;
+
+  // File log (monospace)
+  document.getElementById('file-log').innerHTML =
+    A.results.map(r=>`<div>${r.filename}  ${r.status==='ok'?'✓':r.status==='skipped'?'(skipped)':'✗'}</div>`).join('');
+
+  // Summary rows
+  document.getElementById('summary-rows').innerHTML =
+    A.results.map(r=>`
+      <div class="summary-row">
+        <span class="summary-emo">${EMOTIONS[r.idx].en}</span>
+        <span class="summary-file">${r.filename}</span>
+        <span class="summary-check">${r.status==='ok'?'✓':r.status==='skipped'?'⏭':'✗'}</span>
+      </div>`).join('');
+
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('topbar-prog').textContent=`${EMOTIONS.length}/${EMOTIONS.length} ✓`;
+  goTo('s-done');
+}
+
+/* ── Timer ────────────────────────────────────────────────────── */
+function updateTimer(){
+  const m=String(Math.floor(A.sec/60)).padStart(1,'0');
+  const s=String(A.sec%60).padStart(2,'0');
+  document.getElementById('r-timer').textContent=m+':'+s;
+}
+
+/* ── Oscilloscope (signature element) ─────────────────────────── */
+function sizeCanvas(){
+  const cv=document.getElementById('waveform');
+  const wr=cv.parentElement;
+  cv.width=wr.clientWidth; cv.height=80;
+}
+function drawScope(){
+  if(!A.analyser) return;
+  A.raf=requestAnimationFrame(drawScope);
+  const cv=document.getElementById('waveform');
+  const cx=cv.getContext('2d');
+  const W=cv.width, H=cv.height;
+  const buf=new Uint8Array(A.analyser.fftSize);
+  A.analyser.getByteTimeDomainData(buf);
+  cx.fillStyle='#0B2D1E'; cx.fillRect(0,0,W,H);
+  // Centre guide
+  cx.strokeStyle='rgba(168,230,176,.12)'; cx.lineWidth=1;
+  cx.beginPath(); cx.moveTo(0,H/2); cx.lineTo(W,H/2); cx.stroke();
+  // Waveform
+  cx.strokeStyle='#E8833A'; cx.lineWidth=1.8; cx.lineJoin='round';
+  cx.beginPath();
+  const step=W/buf.length;
+  for(let i=0;i<buf.length;i++){
+    const y=(buf[i]/255)*H;
+    i===0?cx.moveTo(0,y):cx.lineTo(i*step,y);
+  }
+  cx.stroke();
+}
+
+window.addEventListener('resize',()=>{ if(A.recState==='rec') sizeCanvas(); });
+</script>
+</body>
+</html>
