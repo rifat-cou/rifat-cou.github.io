@@ -203,17 +203,24 @@ button { font-family: inherit; cursor: pointer; }
   align-items: center; justify-content: center;
 }
 
+/* Every page's <main> clears the fixed navbar the same way — the index
+   hero used to do this itself with its own margin-top, which meant
+   every other page (Education, Experience, Projects, Research, and the
+   coming-soon placeholders) had no clearance at all and rendered
+   partly hidden behind the navbar. One rule, applied globally, fixes
+   all of them at once. */
+main { padding-top: var(--nav-h); }
+
 /* ==========================================================================
    HERO — animated banner SVG (also used standalone as the GitHub banner)
    ========================================================================== */
 .hero {
   position: relative;
-  margin-top: var(--nav-h);   /* sits just below the fixed navbar */
   width: 100%;
   aspect-ratio: 1500 / 200;   /* matches banner.svg's native size */
   max-height: 220px;
   display: block;
- /* overflow: hidden;*/
+  overflow: hidden;
   /* Not fixed/sticky — this scrolls away normally as soon as the
      visitor scrolls toward the profile section below. */
 }
@@ -396,10 +403,11 @@ section { position: relative; padding: clamp(4rem, 9vw, 7rem) 0; }
 @media (max-width: 600px) {
   .ticker-grid { grid-template-columns: 1fr; }
 }
+
 /* ==========================================================================
    PAGE HEAD — shared by interior pages (Education, Experience, etc.)
    ========================================================================== */
-.page-head { padding: 3.5rem 0 .5rem; }
+.page-head { padding: 2rem 0 .5rem; }
 .page-head h1 { font-size: clamp(2rem, 4vw, 2.8rem); }
 .page-head p {
   color: var(--text-dim); margin-top: .8rem; max-width: 60ch;
@@ -654,6 +662,7 @@ section { position: relative; padding: clamp(4rem, 9vw, 7rem) 0; }
   .exp-card { padding: 1.25rem; }
   .exp-logo { width: 46px; height: 46px; }
 }
+
 /* ==========================================================================
    PROJECTS — same card/accordion shell as Experience, adapted for
    software projects: a type icon instead of a logo, tech-stack chips,
@@ -751,6 +760,155 @@ section { position: relative; padding: clamp(4rem, 9vw, 7rem) 0; }
   .proj-icon { width: 46px; height: 46px; }
 }
 
+
+/* ==========================================================================
+   RESEARCH — same card/accordion shell as Projects, plus a metrics grid
+   for quantitative results and a headline-result line on the collapsed card
+   ========================================================================== */
+.res-list { display: flex; flex-direction: column; gap: 1.25rem; padding: 2rem 0 4.5rem; }
+
+.res-card {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg-soft);
+  padding: 1.5rem 1.75rem;
+  transition: border-color .2s ease;
+}
+.res-card:hover, .res-card.is-open { border-color: var(--pulse); }
+
+.res-head { display: flex; gap: 1.1rem; align-items: flex-start; }
+.res-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--signal);
+}
+.res-icon svg { width: 26px; height: 26px; }
+
+.res-summary { flex: 1; min-width: 0; }
+.res-title-row { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem; }
+.res-name { font-size: 1.1rem; line-height: 1.35; }
+.res-tagline { margin-top: .4rem; font-size: .93rem; color: var(--text-dim); line-height: 1.55; }
+
+.res-meta {
+  margin-top: .6rem;
+  display: flex; flex-wrap: wrap; align-items: center; gap: .4rem;
+  font-family: var(--font-mono); font-size: .74rem;
+  color: var(--text-dim); letter-spacing: .02em;
+}
+.res-meta .dot { opacity: .5; }
+
+.res-headline {
+  margin-top: .7rem;
+  font-size: .95rem; font-weight: 600; color: var(--signal);
+}
+
+.res-links { margin-top: .7rem; display: flex; flex-wrap: wrap; gap: 1.1rem; }
+.res-link { font-size: .84rem; font-weight: 600; color: var(--pulse); }
+.res-link:hover { color: var(--signal); }
+
+.res-foot { display: flex; justify-content: flex-end; margin-top: 1.1rem; }
+.res-toggle {
+  display: inline-flex; align-items: center; gap: .45rem;
+  font-family: var(--font-body); font-size: .82rem; font-weight: 600;
+  color: var(--text); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: .5rem 1.05rem;
+  transition: border-color .2s ease, color .2s ease;
+}
+.res-toggle:hover { border-color: var(--signal); color: var(--signal); }
+.res-toggle svg { transition: transform .3s ease; flex-shrink: 0; }
+.res-card.is-open .res-toggle svg { transform: rotate(180deg); }
+
+.res-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .35s ease;
+}
+.res-card.is-open .res-panel { grid-template-rows: 1fr; }
+.res-panel-inner { overflow: hidden; }
+
+.res-details {
+  padding-top: 1.5rem; margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  display: flex; flex-direction: column; gap: 1.4rem;
+}
+.res-block .eyebrow { margin-bottom: .6rem; }
+.res-block p { font-size: .92rem; color: var(--text-dim); line-height: 1.65; }
+
+.res-feature-list { display: flex; flex-direction: column; gap: .55rem; }
+.res-feature-list li {
+  font-size: .92rem; color: var(--text); line-height: 1.55;
+  padding-left: 1.1rem; position: relative;
+}
+.res-feature-list li::before {
+  content: ''; position: absolute; left: 0; top: .55em;
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--pulse);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+.metric-item {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .85rem .9rem;
+}
+.metric-label {
+  font-family: var(--font-mono); font-size: .66rem;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.metric-value {
+  margin-top: .35rem;
+  font-family: var(--font-mono); font-size: 1.15rem; font-weight: 600;
+  color: var(--signal);
+}
+
+@media (max-width: 640px) {
+  .res-card { padding: 1.25rem; }
+  .res-icon { width: 46px; height: 46px; }
+}
+
+/* ==========================================================================
+   COMING SOON — shared placeholder for not-yet-built pages
+   ========================================================================== */
+.coming-soon {
+  min-height: 50vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+  padding: 4rem 1rem 5rem;
+}
+.coming-soon-dot {
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--signal) 18%, transparent);
+  margin-bottom: 1.75rem;
+  animation: coming-soon-pulse 2s ease-in-out infinite;
+}
+@keyframes coming-soon-pulse {
+  0%, 100% { opacity: .5; transform: scale(.85); }
+  50%      { opacity: 1;  transform: scale(1); }
+}
+.coming-soon h1 {
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin-bottom: .75rem;
+}
+.coming-soon p {
+  font-family: var(--font-mono);
+  font-size: .85rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.coming-soon .btn { margin-top: 2.25rem; width: auto; }
+
 /* ==========================================================================
    FOOTER
    ========================================================================== */
@@ -831,7 +989,11 @@ section { position: relative; padding: clamp(4rem, 9vw, 7rem) 0; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .slide { transition: opacity .3s ease; }
   .pulse-dot { animation: none; }
   .btn:hover { transform: none; }
+  .edu-panel { transition: none; }
+  .exp-panel { transition: none; }
+  .proj-panel { transition: none; }
+  .res-panel { transition: none; }
+  .coming-soon-dot { animation: none; }
 }
