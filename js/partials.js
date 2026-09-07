@@ -17,7 +17,7 @@ const NAVBAR_HTML = `
   <div class="wrap">
     <a href="index.html" class="brand" aria-label="M Rifatul Islam — Home">
       <img src="assets/favicon.ico" alt="Rifatul Islam">
-      <span class="brand-name">M Rifatul <em>Islam </em>Marof</span>
+      <span class="brand-name">M Rifatul <em>Islam</em></span>
     </a>
 
     <div class="nav-right">
