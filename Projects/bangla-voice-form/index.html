@@ -376,6 +376,94 @@ audio{width:100%;border-radius:6px;margin-bottom:12px;
     </div>
 
     <div class="field">
+      <span class="field-label">নিজ জেলা *</span>
+      <select id="f-district">
+        <option value="">— আপনার নিজ জেলা নির্বাচন করুন —</option>
+        <optgroup label="ঢাকা বিভাগ">
+          <option value="Dhaka">ঢাকা</option>
+          <option value="Faridpur">ফরিদপুর</option>
+          <option value="Gazipur">গাজীপুর</option>
+          <option value="Gopalganj">গোপালগঞ্জ</option>
+          <option value="Kishoreganj">কিশোরগঞ্জ</option>
+          <option value="Madaripur">মাদারীপুর</option>
+          <option value="Manikganj">মানিকগঞ্জ</option>
+          <option value="Munshiganj">মুন্সিগঞ্জ</option>
+          <option value="Narayanganj">নারায়ণগঞ্জ</option>
+          <option value="Narsingdi">নরসিংদী</option>
+          <option value="Rajbari">রাজবাড়ী</option>
+          <option value="Shariatpur">শরীয়তপুর</option>
+          <option value="Tangail">টাঙ্গাইল</option>
+        </optgroup>
+        <optgroup label="চট্টগ্রাম বিভাগ">
+          <option value="Bandarban">বান্দরবান</option>
+          <option value="Brahmanbaria">ব্রাহ্মণবাড়িয়া</option>
+          <option value="Chandpur">চাঁদপুর</option>
+          <option value="Chattogram">চট্টগ্রাম</option>
+          <option value="Cox's Bazar">কক্সবাজার</option>
+          <option value="Cumilla">কুমিল্লা</option>
+          <option value="Feni">ফেনী</option>
+          <option value="Khagrachhari">খাগড়াছড়ি</option>
+          <option value="Lakshmipur">লক্ষ্মীপুর</option>
+          <option value="Noakhali">নোয়াখালী</option>
+          <option value="Rangamati">রাঙ্গামাটি</option>
+        </optgroup>
+        <optgroup label="রাজশাহী বিভাগ">
+          <option value="Bogura">বগুড়া</option>
+          <option value="Chapainawabganj">চাঁপাইনবাবগঞ্জ</option>
+          <option value="Joypurhat">জয়পুরহাট</option>
+          <option value="Naogaon">নওগাঁ</option>
+          <option value="Natore">নাটোর</option>
+          <option value="Pabna">পাবনা</option>
+          <option value="Rajshahi">রাজশাহী</option>
+          <option value="Sirajganj">সিরাজগঞ্জ</option>
+        </optgroup>
+        <optgroup label="খুলনা বিভাগ">
+          <option value="Bagerhat">বাগেরহাট</option>
+          <option value="Chuadanga">চুয়াডাঙ্গা</option>
+          <option value="Jashore">যশোর</option>
+          <option value="Jhenaidah">ঝিনাইদহ</option>
+          <option value="Khulna">খুলনা</option>
+          <option value="Kushtia">কুষ্টিয়া</option>
+          <option value="Magura">মাগুরা</option>
+          <option value="Meherpur">মেহেরপুর</option>
+          <option value="Narail">নড়াইল</option>
+          <option value="Satkhira">সাতক্ষীরা</option>
+        </optgroup>
+        <optgroup label="বরিশাল বিভাগ">
+          <option value="Barguna">বরগুনা</option>
+          <option value="Barishal">বরিশাল</option>
+          <option value="Bhola">ভোলা</option>
+          <option value="Jhalokathi">ঝালকাঠি</option>
+          <option value="Patuakhali">পটুয়াখালী</option>
+          <option value="Pirojpur">পিরোজপুর</option>
+        </optgroup>
+        <optgroup label="সিলেট বিভাগ">
+          <option value="Habiganj">হবিগঞ্জ</option>
+          <option value="Moulvibazar">মৌলভীবাজার</option>
+          <option value="Sunamganj">সুনামগঞ্জ</option>
+          <option value="Sylhet">সিলেট</option>
+        </optgroup>
+        <optgroup label="রংপুর বিভাগ">
+          <option value="Dinajpur">দিনাজপুর</option>
+          <option value="Gaibandha">গাইবান্ধা</option>
+          <option value="Kurigram">কুড়িগ্রাম</option>
+          <option value="Lalmonirhat">লালমনিরহাট</option>
+          <option value="Nilphamari">নীলফামারী</option>
+          <option value="Panchagarh">পঞ্চগড়</option>
+          <option value="Rangpur">রংপুর</option>
+          <option value="Thakurgaon">ঠাকুরগাঁও</option>
+        </optgroup>
+        <optgroup label="ময়মনসিংহ বিভাগ">
+          <option value="Jamalpur">জামালপুর</option>
+          <option value="Mymensingh">ময়মনসিংহ</option>
+          <option value="Netrokona">নেত্রকোনা</option>
+          <option value="Sherpur">শেরপুর</option>
+        </optgroup>
+        <option value="Outside Bangladesh / Other">বাংলাদেশের বাইরে / অন্যান্য</option>
+      </select>
+    </div>
+
+    <div class="field">
       <span class="field-label">শিক্ষাগত যোগ্যতা</span>
       <div class="radio-row">
         <label class="radio-chip"><input type="radio" name="edu" value="SSC/O-level">এসএসসি</label>
@@ -576,7 +664,7 @@ audio{width:100%;border-radius:6px;margin-bottom:12px;
 ═════════════════════════════════════════════════════════════ -->
 <script>
 /* ── CONFIG ─── change these before deploying ─────────────────────── */
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbylVZrq9lnbO9ZLCRcC5fYoxVhwHYrQhR2ObJSrlvIKmE2IRvKu_KX9NDteAF7mf7Zi/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyR7t_FsvUrZnarHMbtkhCaCmiXNnZczSMcP0gkZQNHHq0TqLOyQM8ihnAS7MY-XXdt/exec';
 const SAMPLE_RATE     = 16000;   // 16000 = standard for speech ML; 44100 = highest quality
 /* ─────────────────────────────────────────────────────────────────── */
 
@@ -667,7 +755,7 @@ async function testConnection(){
   dot.className = 'conn-indicator checking';
   txt.textContent = 'পরীক্ষা করা হচ্ছে…';
   try {
-    if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
+    if(APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyR7t_FsvUrZnarHMbtkhCaCmiXNnZczSMcP0gkZQNHHq0TqLOyQM8ihnAS7MY-XXdt/exec'){
       throw new Error('NOT_CONFIGURED');
     }
     const r = await fetch(APPS_SCRIPT_URL, {mode:'cors'});
@@ -716,13 +804,14 @@ function updateSubmitBtn(){
 function startRecording(){
   const age     = document.getElementById('f-age').value;
   const dialect = document.getElementById('f-dialect').value;
-  if(!age || !dialect){
-    alert('চালিয়ে যাওয়ার আগে অনুগ্রহ করে আপনার বয়সসীমা ও উপভাষা নির্বাচন করুন।');
+  const district = document.getElementById('f-district').value;
+  if(!age || !dialect || !district){
+    alert('চালিয়ে যাওয়ার আগে অনুগ্রহ করে আপনার বয়সসীমা, উপভাষা ও জেলা নির্বাচন করুন।');
     return;
   }
   const getR = n => { const el=document.querySelector(`input[name="${n}"]:checked`); return el?el.value:''; };
   A.metadata = {
-    age, dialect,
+    age, dialect, district,
     gender:      getR('gender'),
     education:   getR('edu'),
     device:      getR('device'),
@@ -1067,6 +1156,7 @@ function returnToHome(){
   document.getElementById('conn-text').textContent='এখনো পরীক্ষা করা হয়নি';
   document.getElementById('f-age').value='';
   document.getElementById('f-dialect').value='';
+  document.getElementById('f-district').value='';
   document.querySelectorAll('#s-meta input[type=radio]').forEach(r=>r.checked=false);
   document.getElementById('prog-fill').style.width='0%';
   document.getElementById('topbar-prog').textContent='';
