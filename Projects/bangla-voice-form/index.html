@@ -755,7 +755,7 @@ async function testConnection(){
   dot.className = 'conn-indicator checking';
   txt.textContent = 'পরীক্ষা করা হচ্ছে…';
   try {
-    if(APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxJN1rQSCJtE7Lt6FndRC0AdOMDnT8FgB5apEW0TtRQPMG_wmBEW1AGze9zZlQ_eXWJ/exec'){
+    if(APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE'){
       throw new Error('NOT_CONFIGURED');
     }
     const r = await fetch(APPS_SCRIPT_URL, {mode:'cors'});
