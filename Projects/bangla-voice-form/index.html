@@ -664,7 +664,7 @@ audio{width:100%;border-radius:6px;margin-bottom:12px;
 ═════════════════════════════════════════════════════════════ -->
 <script>
 /* ── CONFIG ─── change these before deploying ─────────────────────── */
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyR7t_FsvUrZnarHMbtkhCaCmiXNnZczSMcP0gkZQNHHq0TqLOyQM8ihnAS7MY-XXdt/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxJN1rQSCJtE7Lt6FndRC0AdOMDnT8FgB5apEW0TtRQPMG_wmBEW1AGze9zZlQ_eXWJ/exec';
 const SAMPLE_RATE     = 16000;   // 16000 = standard for speech ML; 44100 = highest quality
 /* ─────────────────────────────────────────────────────────────────── */
 
@@ -755,7 +755,7 @@ async function testConnection(){
   dot.className = 'conn-indicator checking';
   txt.textContent = 'পরীক্ষা করা হচ্ছে…';
   try {
-    if(APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyR7t_FsvUrZnarHMbtkhCaCmiXNnZczSMcP0gkZQNHHq0TqLOyQM8ihnAS7MY-XXdt/exec'){
+    if(APPS_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxJN1rQSCJtE7Lt6FndRC0AdOMDnT8FgB5apEW0TtRQPMG_wmBEW1AGze9zZlQ_eXWJ/exec'){
       throw new Error('NOT_CONFIGURED');
     }
     const r = await fetch(APPS_SCRIPT_URL, {mode:'cors'});
