@@ -37,10 +37,10 @@ const EDUCATION = [
     degree: 'B.Sc. Engineering in Information & Communication Technology (ICT)',
     subject: 'ICT',
     session: '2020–2021',
-    result: '3.68 / 4.00 CGPA · 12th in department',
+    result: '3.71 / 4.00 CGPA · 12th in department',
     years: '22 February 2022 – July 2026 (Graduated)',
     courses: [
-      'Data Structure',
+      'Data Structures',
       'Algorithm Design and Analysis',
       'Object Oriented Programming (C++ &amp; Java)',
       'Database Management Systems',
